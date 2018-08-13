@@ -1,0 +1,42 @@
+{
+  "name": "Hello World",
+  "description": "Atlassian Connect app",
+  "key": "com.example.myapp",
+  "baseUrl": "https://your-url.ngrok.io",
+  "vendor": {
+    "name": "Example, Inc.",
+    "url": "http://example.com"
+  },
+  "authentication": {
+    "type": "jwt"
+  },
+  "apiVersion": 1,
+  "lifecycle": {
+    "installed": "/installed",
+    "uninstalled": "/uninstalled"
+  },
+  "scopes": [
+    "read",
+    "write",
+    "delete",
+    "project_admin",
+    "admin"
+  ],
+  "modules": {
+    "webPanels": [
+      {
+        "url": "/widget",
+        "location": "atl.jira.view.issue.right.context",
+        "layout": {
+          "width": "100%",
+          "height": "400"
+        },
+        "weight": 11,
+        "name": {
+          "value": "Some name"
+        },
+        "key": "my-web-panel"
+      }
+    ]
+  }
+}
