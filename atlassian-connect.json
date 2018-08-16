@@ -2,7 +2,7 @@
   "name": "Hello World",
   "description": "Atlassian Connect app",
   "key": "com.example.myapp",
-  "baseUrl": "https://your-url.ngrok.io",
+  "baseUrl": "https://snow-widget.ngrok.io",
   "vendor": {
     "name": "Example, Inc.",
     "url": "http://example.com"

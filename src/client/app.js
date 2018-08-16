@@ -1,7 +1,7 @@
 import React from 'react'
 import '@babel/polyfill'
 
-import { getUrlParam, getQueryParam, getTicketName } from './utils'
+import { isOldView, getUrlParam, getQueryParam, getTicketName } from './utils'
 
 export default class App extends React.Component {
   constructor(props) {
@@ -25,9 +25,7 @@ export default class App extends React.Component {
   injectAP = async () => {
     const allJS = getUrlParam('xdm_e', window.location.search) + getUrlParam('cp', window.location.search) + '/atlassian-connect/all.js';
 
-    // initialze AP
     $.getScript(allJS, () => {
-      console.log('all.js loaded into add-on iframe!');
       this.setState({ AP }, this.fetchData)
     })
   }
@@ -41,29 +39,28 @@ export default class App extends React.Component {
       const isOldView = getQueryParam('oldIssueView', location) === 'true'
 
       // get ticket data!
-      const ticketData = await AP.request({
+      const { id, key, self, ...ticketData } = await AP.request({
         url: `${url}/rest/api/2/issue/${ticketName}?fields=summary,priority,status,issuetype`,
         contentType: 'application/json',
         type: 'GET',
       })
       .then(data => JSON.parse(data.body))
 
+      console.log('\n\n')
       console.log(ticketData)
 
       
       const priority = (Math.floor(Math.random() * 5) + 1).toString()
-      this.setState({ isLoading: false, isOldView, ticketName, url, priority })
+      this.setState({ AP, isLoading: false, isOldView, ticketName, url, priority })
     });
   }
 
 
   updatePriority = () => {
-    const { AP, url, priority } = this.state    
+    const { AP, url, priority, ticketName } = this.state    
 
     const bodyData = {
       "fields": {
-        "summary": "5",
-        "description": "This is a test",
         "priority": {
           "id": priority
         }
@@ -71,7 +68,7 @@ export default class App extends React.Component {
     }
 
     AP.request({
-      url: `${url}/rest/api/2/issue/TEST-1`,
+      url: `${url}/rest/api/2/issue/${ticketName}`,
       contentType: 'application/json',
       type: 'PUT',
       data: JSON.stringify(bodyData),
@@ -80,6 +77,7 @@ export default class App extends React.Component {
       }
     })
     .then((response) => {
+      console.log('\n\n\n\n')
       console.log('success')
 
       // I break in new view!
@@ -98,6 +96,7 @@ export default class App extends React.Component {
         <button className='active tab' onClick={this.updatePriority} >
           Click Me!
         </button>
+        <iframe src="https://giphy.com/embed/brHaCdJqCXijm" width="100%" height="100%" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
       </div>
     ) : <div>Loading!</div>
   }
